@@ -50,7 +50,7 @@ describe('AR page (US-5.16)', () => {
     renderRoute('/ar/mars/machine-a')
     expect(await screen.findByRole('heading', { level: 1, name: 'Test Rover in your room' })).toBeInTheDocument()
     const model = await viewer()
-    expect(model).toHaveAttribute('src', 'https://example.org/models/Test%20Rover.glb')
+    expect(model.getAttribute('src')).toMatch(/^blob:verified-model-/)
     expect(model).toHaveAttribute('ar')
     // WebXR and Quick Look only: no Scene Viewer (it would hand the model to a Google app).
     expect(model).toHaveAttribute('ar-modes', 'webxr quick-look')
@@ -123,6 +123,28 @@ describe('AR page (US-5.16)', () => {
     })
     renderRoute('/ar/mars/machine-a')
     expect(await screen.findByText(/NASA has not published a 3D model of this machine/)).toBeInTheDocument()
+    expect(document.querySelector('model-viewer')).toBeNull()
+  })
+
+  it('refuses to show a model whose file no longer matches its verified fingerprint (ADR-028)', async () => {
+    const original = globalThis.fetch
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) =>
+        String(input).endsWith('.glb') ? new Response('a different file', { status: 200 }) : original(input),
+      ),
+    )
+    renderRoute('/ar/mars/machine-a')
+    expect(await screen.findByText('This 3D model no longer matches the NASA file our team checked, so it is not shown.')).toBeInTheDocument()
+    expect(document.querySelector('model-viewer')).toBeNull()
+  })
+
+  it('refuses a 3D model that has no fingerprint at all (fail closed)', async () => {
+    patchApi('/api/missions/mission-a', (mission) => {
+      for (const media of mission.media as { type: string; sha256?: string }[]) if (media.type === '3d-model') delete media.sha256
+    })
+    renderRoute('/ar/mars/machine-a')
+    expect(await screen.findByText(/no longer matches the NASA file our team checked/)).toBeInTheDocument()
     expect(document.querySelector('model-viewer')).toBeNull()
   })
 

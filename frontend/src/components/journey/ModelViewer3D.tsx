@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Box, Check, ExternalLink, Scan } from 'lucide-react'
+import { Box, Check, ExternalLink, Scan, ShieldAlert } from 'lucide-react'
 import type { MachinePart, Media } from '@/api/types'
 import { LoadState } from '@/components/common/LoadState'
 import { DepictionBadge } from '@/components/media/DepictionBadge'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useTranslation } from '@/i18n'
+import { ModelIntegrityError, verifiedModelUrl } from '@/lib/modelIntegrity'
 import { placedParts, type PlacedPart } from '@/lib/parts'
 import { cn } from '@/lib/utils'
 
-type Status = 'loading' | 'ready' | 'error'
+/** "tampered": the file no longer matches the fingerprint the team verified (V19): not shown. */
+type Status = 'loading' | 'ready' | 'error' | 'tampered'
 
 type ModelViewerConfig = { dracoDecoderLocation?: string; ktx2TranscoderLocation?: string }
 
@@ -64,7 +66,6 @@ const AR_MODES = 'webxr quick-look'
 export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback, overlay }: ModelViewer3DProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
-  const [status, setStatus] = useState<Status>('loading')
   const [open, setOpen] = useState<string | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [canAr, setCanAr] = useState(false)
@@ -73,6 +74,43 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
   const active = placed.find((part) => part.id === open)
   const [attempt, setAttempt] = useState(0)
   const viewerRef = useRef<HTMLElement>(null)
+
+  // Three independent things must go right; kept apart so a late success never hides a refusal.
+  const [library, setLibrary] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [viewerFailed, setViewerFailed] = useState(false)
+  /** The verified local copy of the model (ADR-028), for this model and this attempt only. */
+  const fileKey = `${model.url}#${model.sha256 ?? ''}#${attempt}`
+  const [file, setFile] = useState<{ key: string; src?: string; failure?: 'error' | 'tampered' } | null>(null)
+  const current = file?.key === fileKey ? file : null
+  const src = current?.src ?? null
+  const status: Status =
+    current?.failure === 'tampered'
+      ? 'tampered'
+      : library === 'error' || viewerFailed || current?.failure === 'error'
+        ? 'error'
+        : library === 'ready' && src
+          ? 'ready'
+          : 'loading'
+
+  const { url: modelUrl, sha256: modelSha256 } = model
+  useEffect(() => {
+    const controller = new AbortController()
+    let objectUrl: string | null = null
+    verifiedModelUrl({ url: modelUrl, sha256: modelSha256 }, controller.signal).then(
+      (url) => {
+        objectUrl = url
+        if (controller.signal.aborted) URL.revokeObjectURL(url)
+        else setFile({ key: fileKey, src: url })
+      },
+      (error: unknown) => {
+        if (!controller.signal.aborted) setFile({ key: fileKey, failure: error instanceof ModelIntegrityError ? 'tampered' : 'error' })
+      },
+    )
+    return () => {
+      controller.abort()
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+    }
+  }, [fileKey, modelUrl, modelSha256])
 
   const onPartOpenRef = useRef(onPartOpen)
   useEffect(() => {
@@ -86,8 +124,8 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
     let alive = true
     configureModelViewer()
     import('@google/model-viewer').then(
-      () => alive && setStatus('ready'),
-      () => alive && setStatus('error'),
+      () => alive && setLibrary('ready'),
+      () => alive && setLibrary('error'),
     )
     return () => {
       alive = false
@@ -98,7 +136,7 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
   useEffect(() => {
     const viewer = viewerRef.current
     if (!viewer) return
-    const onError = () => setStatus('error')
+    const onError = () => setViewerFailed(true)
     const onLoad = () => {
       setLoaded(true)
       setCanAr(Boolean((viewer as ModelElement).canActivateAR))
@@ -113,7 +151,7 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
       viewer.removeEventListener('load', onLoad)
       viewer.removeEventListener('ar-status', onArStatus)
     }
-  }, [status])
+  }, [status, src])
 
   // US-5.13: touching the model itself opens the nearest named part.
   const placedRef = useRef(placed)
@@ -135,20 +173,21 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
     }
     viewer.addEventListener('click', onClick)
     return () => viewer.removeEventListener('click', onClick)
-  }, [status])
+  }, [status, src])
 
   const retry = () => {
-    setStatus('loading')
+    setLibrary('loading')
+    setViewerFailed(false)
     setAttempt((n) => n + 1)
   }
 
   return (
     <figure className="flex size-full flex-col">
       <div className="relative min-h-72 flex-1 overflow-hidden rounded-2xl border border-stellar-border/70 bg-[radial-gradient(circle_at_50%_40%,rgba(54,214,231,0.12),transparent_65%)]">
-        {status === 'ready' ? (
+        {status === 'ready' && src ? (
           <model-viewer
             ref={viewerRef}
-            src={model.url}
+            src={src}
             alt={model.alt}
             camera-controls
             // The wheel must keep scrolling the journey: zooming would capture it (preventDefault).
@@ -202,9 +241,15 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
               </button>
             ))}
           </model-viewer>
-        ) : status === 'loading' ? (
+        ) : status === 'loading' || status === 'ready' ? (
           <div className="flex size-full min-h-72 items-center justify-center">
             <LoadState status="loading" onRetry={retry} />
+          </div>
+        ) : status === 'tampered' ? (
+          // Retrying would fetch the same changed file: say why the model is not shown.
+          <div role="alert" className="flex size-full min-h-72 flex-col items-center justify-center gap-3 p-4 text-center text-sm text-moon-dust">
+            <ShieldAlert aria-hidden="true" className="size-8" />
+            <p>{t('journey.modelTampered')}</p>
           </div>
         ) : (
           <div className="flex size-full min-h-72 flex-col items-center justify-center gap-3 p-4 text-center text-sm text-moon-dust">
@@ -215,7 +260,7 @@ export function ModelViewer3D({ model, parts = [], found, onPartOpen, arFallback
             </button>
           </div>
         )}
-        {status === 'ready' && !loaded && (
+        {status === 'ready' && src && !loaded && (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <span className="flex items-center gap-3 font-mono text-[0.72rem] tracking-[0.3em] text-world uppercase">
               <span className="signal-acquire">

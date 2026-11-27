@@ -53,6 +53,19 @@ Conséquence : `ar-scale="auto"` (échelle NASA, l'enfant pince pour ajuster) et
 - **Taille** : 8,69 × 7,31 × 12,71 unités (bras déployé) : pas en mètres. NSSDCA (`nssdca-2003-027a`, déjà dans le contenu) place les caméras du mât à environ 1,4 m au-dessus du bas des roues ; sur le modèle, 6,86 unités → environ 0,2 m par unité. Non appliqué : demande une évolution du modèle de données (échelle par média), à valider.
 - **Placement des 6 pièces** (coordonnées du modèle, mesurées dans le navigateur avec three.js) : mât = centre des sommets au-dessus de y 3,6 (0 ; 4,45 ; 0,71) ; antenne grand gain = matériau « Copper » de la parabole (1,68 ; 1,34 ; −2,57) ; panneaux solaires = aile droite du matériau « SolarArrays » (3,82 ; 0,68 ; −2,19) ; bras = sommets au-delà de z 4,75 (0,08 ; 0 ; 6,17) ; Hazcams = petit boîtier à l'avant du corps (0,31 ; −0,76 ; 1,81) ; roues = roue avant droite (3,06 ; −1,99 ; 2,27). Le modèle étant simplifié, ces repères restent `draft` : à confirmer par l'équipe.
 
+## Sécurisation des modèles 3D (2026-11-27)
+
+Demande de l'équipe : « Oui, sécurise-les ». Détail dans ADR-028.
+
+| Modèle | SHA-256 | Adresse |
+|---|---|---|
+| `ingenuity-3d-model` | `9e5a5398ab335eae7d46335085301ce46fb7de052300b645debe8bac6d39f2b5` | assets.science.nasa.gov |
+| `apollo-lunar-module-3d-model` | `379101dfcee399267addf771709107c35e826b0b9e5233272f123e4c8a585c4e` | assets.science.nasa.gov |
+| `mer-3d-model` | `95c852efb385b55bea3104a0fca2730cd2ef25353af4d38273d3f0bda5c68c31` | GitHub NASA, figé sur `45bd4face6557dc06f78f58875214f77f453205f` |
+
+- Fichiers : `backend/content/media.json` + `sources.json` (adresse figée), `content/types.ts` + `validate.ts` (V19), `scripts/check-models.ts` + `npm run models:check`, `.github/workflows/models.yml`, `frontend/src/lib/modelIntegrity.ts`, `ModelViewer3D.tsx` (vérification avant affichage, états séparés bibliothèque / fichier / visionneuse), clés `journey.modelTampered` en/fr.
+- **Bug trouvé par les tests et corrigé** : si la vérification du fichier échouait avant le chargement de la bibliothèque 3D, l'état « prêt » de la bibliothèque écrasait le refus et le site restait en chargement. Les trois états sont maintenant indépendants ; un refus ne peut plus être masqué.
+
 ## Vérification (Verify)
 
 | Contrôle | Commande / méthode | Résultat réel |

@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
-    "content:check": "tsx src/scripts/check-content.ts"
+    "content:check": "tsx src/scripts/check-content.ts",
+    "models:check": "tsx src/scripts/check-models.ts"
   },
   "keywords": [],
   "type": "module",

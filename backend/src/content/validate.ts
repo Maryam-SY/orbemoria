@@ -24,9 +24,12 @@ export interface ValidationReport {
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const PARTIAL_DATE = /^\d{4}(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12]\d|3[01]))?)?$/
 const FULL_DATE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
+const SHA256 = /^[0-9a-f]{64}$/
+/** raw.githubusercontent.com/<owner>/<repo>/<40-hex commit>/… — a commit never changes, a branch can. */
+const GITHUB_PINNED = /^https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[0-9a-f]{40}\//
 
 /**
- * Integrity rules V1–V18 from docs/architecture/DATA_MODEL.md §5.
+ * Integrity rules V1–V19 from docs/architecture/DATA_MODEL.md §5.
  * Errors block startup and CI; warnings are reported but tolerated.
  */
 export function validateContent(content: Content): ValidationReport {
@@ -337,6 +340,12 @@ export function validateContent(content: Content): ValidationReport {
     } else if (m.descriptionStatus !== undefined) err(w, 'descriptionStatus without description (V15)')
     if (m.thumbnailUrl != null && !/^https?:\/\//.test(m.thumbnailUrl)) err(w, 'thumbnailUrl must be http(s)')
     if (m.dateCreated != null && !FULL_DATE.test(m.dateCreated)) err(w, `invalid dateCreated "${m.dateCreated}"`)
+    // V19 — 3D models: verified bytes (SHA-256), https, and never a moving GitHub branch.
+    if (m.type === '3d-model') {
+      if (!m.url.startsWith('https://')) err(w, '3D model url must be https (V19)')
+      if (!SHA256.test(m.sha256 ?? '')) err(w, '3D model needs sha256: 64 lowercase hex characters (V19)')
+      if (m.url.startsWith('https://raw.githubusercontent.com/') && !GITHUB_PINNED.test(m.url)) err(w, 'GitHub model url must be pinned to a 40-character commit, not a branch (V19)')
+    } else if (m.sha256 !== undefined && !SHA256.test(m.sha256)) err(w, 'sha256 must be 64 lowercase hex characters (V19)')
   }
 
   // Glossary (V14): bilingual label and definition, at least one form per language, sourced.

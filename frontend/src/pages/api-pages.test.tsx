@@ -96,7 +96,9 @@ describe('machine page (US-5.12)', () => {
   it('shows its NASA 3D model in its own chapter', async () => {
     renderRoute('/explore/mars/machine-a')
     const viewer = await waitForViewer()
-    expect(viewer).toHaveAttribute('src', 'https://example.org/models/Test%20Rover.glb')
+    // ADR-028: the NASA file is downloaded, its SHA-256 checked, then shown from a local copy.
+    expect(viewer.getAttribute('src')).toMatch(/^blob:verified-model-/)
+    expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url) === 'https://example.org/models/Test%20Rover.glb')).toBe(true)
     expect(screen.getByText('Computer image — not a photo')).toBeInTheDocument()
   })
 

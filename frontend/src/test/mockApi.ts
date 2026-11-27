@@ -64,6 +64,8 @@ const model: Media = {
   id: 'media-model',
   type: '3d-model',
   url: 'https://example.org/models/Test%20Rover.glb',
+  // SHA-256 of MODEL_BYTES below: the viewer shows the model only when they match (V19).
+  sha256: '8af1ae905dc9f27b90fd8780bc2f9c2b8bb577e80e8a2f4e1619ae82fbef984a',
   pageUrl: 'https://example.org/models/test-rover',
   alt: '3D model of the test rover',
   depiction: 'simulation',
@@ -256,10 +258,14 @@ const ROUTES: Record<string, unknown> = {
   '/api/media': [photo, artwork, model],
 }
 
+/** Bytes served for any .glb file (a fake model; its SHA-256 is the fixture's `sha256`). */
+export const MODEL_BYTES = 'glTF test model'
+
 /** Replaces global fetch with a router over the fixtures. Unknown paths answer 404. */
 export function installMockApi() {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(String(input), 'http://localhost')
+    if (url.pathname.endsWith('.glb')) return new Response(MODEL_BYTES, { status: 200, headers: { 'Content-Type': 'model/gltf-binary' } })
     const body = ROUTES[url.pathname]
     return new Response(JSON.stringify(body ?? { error: 'Not found' }), {
       status: body ? 200 : 404,

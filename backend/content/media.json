@@ -1133,6 +1133,7 @@
     "id": "ingenuity-3d-model",
     "type": "3d-model",
     "url": "https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/model/ingenuity-mars-helicopter/Ingenuity%20Mars%20Helicopter.glb",
+    "sha256": "9e5a5398ab335eae7d46335085301ce46fb7de052300b645debe8bac6d39f2b5",
     "pageUrl": "https://science.nasa.gov/3d-resources/ingenuity-mars-helicopter/",
     "title": "Ingenuity Mars Helicopter",
     "caption": null,
@@ -4776,6 +4777,7 @@
     "id": "apollo-lunar-module-3d-model",
     "type": "3d-model",
     "url": "https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/model/apollo-lunar-module/Apollo%20Lunar%20Module.glb",
+    "sha256": "379101dfcee399267addf771709107c35e826b0b9e5233272f123e4c8a585c4e",
     "pageUrl": "https://science.nasa.gov/3d-resources/apollo-lunar-module/",
     "title": "Apollo Lunar Module",
     "caption": null,
@@ -4805,8 +4807,9 @@
   {
     "id": "mer-3d-model",
     "type": "3d-model",
-    "url": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/Mars%20Exploration%20Rover%20-%20Opportunity%20%28MER-B%29/Mars%20Exploration%20Rover%20-%20Opportunity%20%28MER-B%29.glb",
-    "pageUrl": "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Mars%20Exploration%20Rover%20-%20Opportunity%20%28MER-B%29",
+    "url": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/45bd4face6557dc06f78f58875214f77f453205f/3D%20Models/Mars%20Exploration%20Rover%20-%20Opportunity%20%28MER-B%29/Mars%20Exploration%20Rover%20-%20Opportunity%20%28MER-B%29.glb",
+    "sha256": "95c852efb385b55bea3104a0fca2730cd2ef25353af4d38273d3f0bda5c68c31",
+    "pageUrl": "https://github.com/nasa/NASA-3D-Resources/tree/45bd4face6557dc06f78f58875214f77f453205f/3D%20Models/Mars%20Exploration%20Rover%20-%20Opportunity%20%28MER-B%29",
     "title": "Mars Exploration Rover - Opportunity (MER-B)",
     "caption": null,
     "alt": {

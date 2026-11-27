@@ -144,6 +144,7 @@ export const en = {
     hideModel: 'Back to the photos',
     modelHelp: 'Drag it (or use the arrow keys once it is selected) to turn it around. 3D model published by NASA.',
     modelUnavailable: 'The 3D model could not be loaded. Try again later.',
+    modelTampered: 'This 3D model no longer matches the NASA file our team checked, so it is not shown.',
     anotherLook: 'Another look',
     flightLabel: 'In pictures: {name}',
   },

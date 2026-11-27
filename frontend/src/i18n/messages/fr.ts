@@ -142,6 +142,7 @@ export const fr: Messages = {
     hideModel: 'Revenir aux photos',
     modelHelp: 'Fais-le glisser (ou utilise les flèches du clavier une fois sélectionné) pour le faire tourner. Modèle 3D publié par la NASA.',
     modelUnavailable: 'Le modèle 3D n’a pas pu être chargé. Réessaie plus tard.',
+    modelTampered: 'Ce modèle 3D ne correspond plus au fichier NASA vérifié par notre équipe : il n’est donc pas affiché.',
     anotherLook: 'Un autre regard',
     flightLabel: 'En images : {name}',
   },
