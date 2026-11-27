@@ -48,6 +48,7 @@ export const en = {
     cue1: 'One day, we left.',
     cue2: 'We walked on the Moon.',
     cue3: 'We landed on Mars.',
+    cueFly: 'We even flew there.',
     cue4: 'Our machines are still there.',
     finale: 'The Next Frontier',
     presents: 'OrbeMoria presents',
@@ -377,7 +378,8 @@ export const en = {
     visualMoon: '3D Moon: NASA’s Scientific Visualization Studio, “CGI Moon Kit” — colour mosaic from the Lunar Reconnaissance Orbiter camera and relief from its laser altimeter (LOLA). Public domain.',
     visualMars: '3D Mars: NASA / JPL / USGS, Viking MDIM 2.1 colourised global mosaic (colour slightly enhanced by OrbeMoria). Public domain.',
     visualPlanets: 'Other planet photographs: NASA NSSDCA Photo Gallery. Public domain.',
-    visualIntro: 'Intro video: NASA Image and Video Library — “Ultimate Saturn V Launch”, “Apollo 11 Restored Moonwalk”, “Perseverance Rover’s Descent and Touchdown on Mars”; edited by OrbeMoria. Public domain.',
+    visualIntro: 'Intro video: NASA Image and Video Library — “Ultimate Saturn V Launch w Enhanced Sound”, “HQ-197, Apollo 12: Pinpoint for Science” (1969), “Perseverance Rover’s Descent and Touchdown on Mars: Onboard Camera Views”, “Ingenuity Mars Helicopter’s Record-Breaking Flight” (NASA/JPL-Caltech); edited by OrbeMoria. Public domain.',
+    soundIntro: 'Sounds of Mars in the intro: NASA Image and Video Library — “NASA’s Perseverance Rover Microphone Captures Sounds from Mars - B” (the wind, as filtered by NASA) and “NASA’s Perseverance Rover Hears Ingenuity Mars Helicopter in Flight” (the rotors’ hum), NASA/JPL-Caltech; short excerpts, softened and lowered by OrbeMoria. Public domain. The music is synthesised by the site.',
     mediaIntro: 'The {count} pictures, videos and 3D models of the stories, grouped by who made them. Each title opens the original page.',
   },
   sound: {

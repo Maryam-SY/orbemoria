@@ -8,12 +8,14 @@ import { FADE_MS, markIntroSeen } from './introSession'
 
 /**
  * US-2.4 / US-5.12: the intro, full screen, when the visitor arrives on the site — real NASA
- * footage (public domain): a Saturn V lifting off, the restored Apollo 11 moonwalk, then the
- * ground of Mars rushing up under Perseverance, filmed by its own camera. Short sentences appear
+ * footage only (public domain; new edit 2026-11-27, team request): the Saturn V engines igniting
+ * and the lift-off, the Moon coming closer through Apollo 12's lunar module window and an
+ * Apollo 12 astronaut on the surface, the ground of Mars rushing up under Perseverance, then
+ * Ingenuity's shadow flying over the dunes, filmed by its own camera. Short sentences appear
  * over the pictures (written, so they work without sound and are translated). US-5.13: it
- * ends on the title "The Next Frontier" in close-up, then fades into the home page; a
- * synthesised space soundtrack follows the pictures, without any voice (team decision
- * 2026-11-15). Browsers refuse sound until the visitor clicks, taps or presses a key: a "turn
+ * ends on the title "The Next Frontier" in close-up, then fades into the home page; a soft
+ * soundtrack with two real recordings from Mars follows the pictures, without any voice
+ * (lib/introSound). Browsers refuse sound until the visitor clicks, taps or presses a key: a "turn
  * sound on" button is then shown, and any click, tap or key also turns it on. The video
  * itself is muted (browsers only autoplay silent videos);
  * skippable at any time (button or Escape), skipped entirely if the browser refuses to play it.
@@ -27,10 +29,11 @@ interface IntroVideoProps {
 
 /** Sentences shown over the footage, in seconds of the edited video (public/media/intro-nasa.mp4). */
 const CUES: ReadonlyArray<{ from: number; to: number; key: MessageKey }> = [
-  { from: 0.4, to: 4.6, key: 'intro.cue1' },
-  { from: 5.4, to: 8.2, key: 'intro.cue2' },
-  { from: 8.8, to: 11.9, key: 'intro.cue3' },
-  { from: 12.3, to: 99, key: 'intro.cue4' },
+  { from: 0.4, to: 5.4, key: 'intro.cue1' },
+  { from: 6.2, to: 11.2, key: 'intro.cue2' },
+  { from: 11.8, to: 14.0, key: 'intro.cue3' },
+  { from: 14.5, to: 16.3, key: 'intro.cueFly' },
+  { from: 16.6, to: 99, key: 'intro.cue4' },
 ]
 
 /** How long the closing title stays in close-up before the site appears. */
