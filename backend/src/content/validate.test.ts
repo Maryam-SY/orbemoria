@@ -126,6 +126,21 @@ describe('content integrity (rules)', () => {
     expect(errorsOf(c)).toContainEqual(expect.stringContaining('depiction must be one of'))
   })
 
+  it('pins every 3D model to verified bytes and never to a moving GitHub branch (V19)', () => {
+    const models = real.media.filter((m) => m.type === '3d-model')
+    expect(models.length).toBeGreaterThanOrEqual(3)
+    expect(models.every((m) => /^[0-9a-f]{64}$/.test(m.sha256 ?? ''))).toBe(true)
+
+    const c = clone()
+    const ingenuity = c.media.find((m) => m.id === 'ingenuity-3d-model')!
+    delete ingenuity.sha256
+    const mer = c.media.find((m) => m.id === 'mer-3d-model')!
+    mer.url = mer.url.replace(/\/NASA-3D-Resources\/[0-9a-f]{40}\//, '/NASA-3D-Resources/master/')
+    const errors = errorsOf(c)
+    expect(errors).toContainEqual(expect.stringContaining('media/ingenuity-3d-model: 3D model needs sha256'))
+    expect(errors).toContainEqual(expect.stringContaining('media/mer-3d-model: GitHub model url must be pinned'))
+  })
+
   it('keeps every machine lifespan sourced and in draft until a human reviews it (V16)', () => {
     const lives = real.machines.flatMap((m) => (m.lifespan ? [m.lifespan] : []))
     expect(lives).toHaveLength(real.machines.length)

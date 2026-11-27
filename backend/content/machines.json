@@ -5603,7 +5603,7 @@
     "parts": {
       "status": "draft",
       "photoMediaId": "mer-by-the-numbers-infographic",
-      "modelMediaId": null,
+      "modelMediaId": "mer-3d-model",
       "items": [
         {
           "id": "pancam-mast",
@@ -5623,7 +5623,11 @@
             "y": 28.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 0,
+            "y": 4.45,
+            "z": 0.71
+          }
         },
         {
           "id": "high-gain-antenna",
@@ -5643,7 +5647,11 @@
             "y": 51.8
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 1.68,
+            "y": 1.34,
+            "z": -2.57
+          }
         },
         {
           "id": "solar-panels",
@@ -5663,7 +5671,11 @@
             "y": 62.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 3.82,
+            "y": 0.68,
+            "z": -2.19
+          }
         },
         {
           "id": "robotic-arm",
@@ -5683,7 +5695,11 @@
             "y": 78.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 0.08,
+            "y": 0,
+            "z": 6.17
+          }
         },
         {
           "id": "hazcams",
@@ -5703,7 +5719,11 @@
             "y": 73.8
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 0.31,
+            "y": -0.76,
+            "z": 1.81
+          }
         },
         {
           "id": "wheels",
@@ -5723,7 +5743,11 @@
             "y": 90.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 3.06,
+            "y": -1.99,
+            "z": 2.27
+          }
         }
       ]
     }
@@ -6700,7 +6724,7 @@
     "parts": {
       "status": "draft",
       "photoMediaId": "mer-by-the-numbers-infographic",
-      "modelMediaId": null,
+      "modelMediaId": "mer-3d-model",
       "items": [
         {
           "id": "pancam-mast",
@@ -6720,7 +6744,11 @@
             "y": 28.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 0,
+            "y": 4.45,
+            "z": 0.71
+          }
         },
         {
           "id": "high-gain-antenna",
@@ -6740,7 +6768,11 @@
             "y": 51.8
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 1.68,
+            "y": 1.34,
+            "z": -2.57
+          }
         },
         {
           "id": "solar-panels",
@@ -6760,7 +6792,11 @@
             "y": 62.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 3.82,
+            "y": 0.68,
+            "z": -2.19
+          }
         },
         {
           "id": "robotic-arm",
@@ -6780,7 +6816,11 @@
             "y": 78.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 0.08,
+            "y": 0,
+            "z": 6.17
+          }
         },
         {
           "id": "hazcams",
@@ -6800,7 +6840,11 @@
             "y": 73.8
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 0.31,
+            "y": -0.76,
+            "z": 1.81
+          }
         },
         {
           "id": "wheels",
@@ -6820,7 +6864,11 @@
             "y": 90.0
           },
           "modelNode": null,
-          "modelPosition": null
+          "modelPosition": {
+            "x": 3.06,
+            "y": -1.99,
+            "z": 2.27
+          }
         }
       ]
     }

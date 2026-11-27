@@ -16,6 +16,12 @@ interface ModelViewerAttributes extends HTMLAttributes<HTMLElement> {
   'shadow-intensity'?: string
   loading?: 'auto' | 'lazy' | 'eager'
   reveal?: 'auto' | 'manual'
+  /** Augmented reality (US-5.16, ADR-028). */
+  ar?: boolean
+  'ar-modes'?: string
+  'ar-scale'?: 'auto' | 'fixed'
+  'ar-placement'?: 'floor' | 'wall'
+  'xr-environment'?: boolean
 }
 
 declare module 'react' {

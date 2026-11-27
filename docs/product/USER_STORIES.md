@@ -348,6 +348,16 @@ Personas : **Visiteur** (10-15 ans, principal), **Curieux** (adulte), **Équipe*
   3. Direction artistique « Transmission » (grain, télémétrie avec voyant **et** texte, cadres HUD, séquence du dernier signal) ; aucune information par la couleur seule ; cibles ≥ 44 px inchangées.
   4. Plus de récit en 6 étapes sur les pages machine ; routes et contenus conservés (décision de retrait à prendre par l'équipe : PRD §2, STORY-003/005, V6).
 
+### US-5.16 — La machine chez moi (réalité augmentée) et la chasse aux pièces
+- **Story** : En tant que visiteur de 10-15 ans, je souhaite, juste en scannant un code, voir la machine posée dans mon salon par la caméra de mon téléphone, tourner autour et y chercher ses pièces, afin de sentir sa taille et de jouer avec elle.
+- **Priorité** : P2, réalisée sur demande écrite de l'équipe (2026-11-19), à acter par le PO · **Exigences** : MEDIA-001, EQUIP-002, NFR-A11Y-001/006 · **Statut** : `review` (ADR-028 ; `docs/project/stories/US-5.16.md`)
+- **Critères** :
+  1. Sur un téléphone ou une tablette compatible, le modèle 3D NASA d'une machine propose « Voir chez moi » et se pose sur le sol (WebXR sur Android, Quick Look sur iOS) ; jamais par Scene Viewer (Google).
+  2. Sur un ordinateur, sous le modèle, un QR code ouvre la page AR de la machine (`/ar/:destinationId/:machineId`) sur le téléphone ; l'adresse est aussi écrite en clair.
+  3. Seuls les modèles publiés par la NASA sont utilisés, avec leur badge « Image de synthèse » et leur crédit NASA visible avec un lien vers leur page ; une machine sans modèle NASA le dit, sans modèle de remplacement ; aucune mention « taille réelle » sans dimension sourcée.
+  4. La chasse aux pièces compte les pièces sourcées trouvées (`Pièces trouvées : n / total`, annoncé aux lecteurs d'écran), marque chaque pièce trouvée d'une coche **et** d'un texte, puis mène au quiz de la machine.
+  5. Toutes les cibles font ≥ 44 px ; textes en anglais et en français.
+
 ### US-5.5 — Mise en production et démo
 - **Priorité** : P0 · **Exigences** : DEPLOY-001, indicateurs PRD §11
 - **Critères** : URL publique vérifiée en navigation privée sur 1 ordinateur et 2 formats de téléphone ; parcours de démo chronométré < 3 min ; plan de secours (galerie seule) répété.

@@ -35,6 +35,8 @@ export interface Media {
   id: string
   type: MediaType
   url: string
+  /** SHA-256 of the file, for 3D models (V19): the viewer checks it before showing the model. */
+  sha256?: string
   thumbnailUrl?: string | null
   /** Verified mid-size copy of the picture, when the library has one (US-5.14). */
   largeUrl?: string | null

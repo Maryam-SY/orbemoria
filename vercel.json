@@ -84,7 +84,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images-assets.nasa.gov https://assets.science.nasa.gov https://nssdc.gsfc.nasa.gov https://science.nasa.gov https://www.nasa.gov https://apollojournals.org https://www.apollojournals.org https://d2pn8kiwq2w21t.cloudfront.net https://ilrs.gsfc.nasa.gov; media-src 'self' https://images-assets.nasa.gov; font-src 'self'; connect-src 'self' data: blob: https://assets.science.nasa.gov; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+          "value": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images-assets.nasa.gov https://assets.science.nasa.gov https://nssdc.gsfc.nasa.gov https://science.nasa.gov https://www.nasa.gov https://apollojournals.org https://www.apollojournals.org https://d2pn8kiwq2w21t.cloudfront.net https://ilrs.gsfc.nasa.gov; media-src 'self' https://images-assets.nasa.gov; font-src 'self'; connect-src 'self' data: blob: https://assets.science.nasa.gov https://raw.githubusercontent.com; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         },
         {
           "key": "Strict-Transport-Security",
@@ -108,7 +108,7 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=(), xr-spatial-tracking=(self)"
         }
       ]
     },

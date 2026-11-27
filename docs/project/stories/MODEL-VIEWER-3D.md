@@ -1,6 +1,7 @@
 # Modèles 3D NASA avec model-viewer (page destination)
 
 - **Statut** : review
+- **Suite** : la réalité augmentée et la chasse aux pièces sont ajoutées par `US-5.16.md` (ADR-028).
 - **Epic** : E3 — Explorer les équipements
 - **Priorité** : P2, comme le parcours scrollé qu'il complète. Réalisé sur **demande écrite de l'équipe** (2026-11-14 : « ajoute les modèles 3D avec model-viewer »), à acter dans SCOPE.md par le PO.
 - **Exigences PRD** : EQUIP-002, MEDIA-001, ABOUT-001, NFR-A11Y-001/006

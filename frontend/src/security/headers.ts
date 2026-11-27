@@ -26,8 +26,12 @@ export const NASA_IMAGE_HOSTS = [
 /** NASA servers videos (MP4) are played from. */
 export const NASA_VIDEO_HOSTS = ['images-assets.nasa.gov'] as const
 
-/** NASA servers 3D models (.glb) are downloaded from. */
-export const NASA_MODEL_HOSTS = ['assets.science.nasa.gov'] as const
+/**
+ * NASA servers 3D models (.glb) are downloaded from. raw.githubusercontent.com serves NASA's own
+ * verified GitHub repository nasa/NASA-3D-Resources (Spirit/Opportunity model, US-5.16, ADR-028),
+ * authorised by the team on 2026-11-20; only 3D models are read from it.
+ */
+export const NASA_MODEL_HOSTS = ['assets.science.nasa.gov', 'raw.githubusercontent.com'] as const
 
 const https = (hosts: readonly string[]) => hosts.map((host) => `https://${host}`)
 
@@ -55,5 +59,5 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Frame-Options': 'DENY',
   'Cross-Origin-Opener-Policy': 'same-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=(), xr-spatial-tracking=(self)',
 }

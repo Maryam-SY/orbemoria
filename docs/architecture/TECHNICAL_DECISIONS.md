@@ -35,6 +35,7 @@
 | ADR-025 | Les actes d'une vie remplacent le récit en six étapes ; direction artistique « Transmission » | Acceptée (2026-11-15) | PRD §2, STORY-003/005, V6 à revoir |
 | ADR-026 | Hébergement : front et API dans un seul projet Vercel | Acceptée (décision de l'équipe, 2026-11-15) | Clôt OPEN-05 |
 | ADR-027 | Photos compressées par l'optimisation d'images de Vercel (liens NASA conservés) | Acceptée (décision de l'équipe, 2026-11-15) | Complète ADR-017 |
+| ADR-028 | Réalité augmentée des modèles NASA (WebXR, Quick Look) et QR code | Acceptée (demande de l'équipe, 2026-11-19) | Complète ADR-020 |
 
 ---
 
@@ -389,4 +390,25 @@
 - **Décision** : (a). `vercel.json` → `images` : largeurs 256 / 640 / 1080 / 1600 / 2048, qualité 70, format WebP, cache 31 jours, 9 hôtes NASA autorisés (`remotePatterns`). `lib/mediaSrc.ts` construit `/_vercel/image?url=…&w=…&q=70` : cartes 640 px (depuis la grande photo), photos plein écran 1080 px sur téléphone et 1600 px au-delà, zoom 2048 px depuis l'original. GIF et SVG non transformés (Vercel les sert tels quels). En local (pas d'optimiseur), les fichiers NASA sont utilisés directement.
 - **Filet de sécurité** : `installImageFallback()` (écoute globale des erreurs d'image) remplace une copie optimisée qui échoue par l'original NASA — quota mensuel dépassé (offre Hobby : 5 000 transformations / mois ; au-delà, les nouvelles images renvoient 402, celles déjà en cache continuent), ou NASA indisponible.
 - **Conséquences** : le contenu ne change pas (toujours des URL NASA, crédits et pages sources affichés). Estimation : ~290 photos × 2 à 3 largeurs, une fois par mois grâce au cache de 31 jours, sous le quota. Tests : `lib/mediaSrc.test.ts`.
+
+## ADR-028 — Réalité augmentée des modèles NASA et QR code
+
+- **Statut** : Acceptée le 2026-11-19 (demande écrite de l'équipe : « faire que l'enfant, juste avec un scan, puisse voir l'outil comme s'il était avec lui dans son salon, y jouer » ; plan validé : « Oui, lance-le »).
+- **Problème** : poser dans la pièce de l'enfant, par la caméra de son téléphone, les machines dont la NASA publie un modèle 3D, et y ouvrir un jeu ; depuis un ordinateur, passer au téléphone par un simple scan.
+- **Options AR** : (a) l'AR intégrée à `@google/model-viewer` (déjà présent, ADR-020) ; (b) une bibliothèque WebXR dédiée (three.js + scène maison, AR.js…) : beaucoup plus de code, pas de Quick Look iOS.
+- **Options QR** : (a) `qrcode-generator@2.0.4` (MIT, Kazuhiko Arase, aucune dépendance, ~52 Ko non minifié, chargé à la demande) ; (b) `qrcode` (plus lourd, dépendances) ; (c) encodeur maison (Reed-Solomon, masques : risque d'erreur élevé pour un gain nul).
+- **Décision** : AR (a), QR (a).
+  - `ar-modes="webxr quick-look"` : WebXR sur Android (Chrome + ARCore), Quick Look sur iPhone/iPad (fichier USDZ généré par model-viewer dans le navigateur, depuis le `.glb` NASA). **Scene Viewer est exclu** : il confie le modèle à une application Google (règle « aucune requête vers Google », ADR-020).
+  - `ar-scale="auto"` : le modèle garde l'échelle publiée par la NASA, et l'enfant peut le pincer pour l'agrandir ou le réduire. **Aucune mention « taille réelle »** : mesuré le 2026-11-19 avec `getDimensions()`, Ingenuity fait 0,99 × 0,56 × 1,11 m (proche de l'engin réel), mais le module lunaire Apollo 6,43 × 5,01 × 6,43 m, plus petit que le vrai. Afficher une taille réelle demanderait des dimensions sourcées dans `backend/content/` (piste contenu).
+  - Route `/ar/:destinationId/:machineId` (`ArPage`) : c'est l'adresse du QR code. Elle montre le modèle, son badge « Image de synthèse », son crédit NASA avec un lien vers sa page NASA 3D Resources, et la chasse aux pièces (pièces sourcées de `Machine.parts`, US-5.13). Une machine sans modèle NASA le dit, sans modèle de remplacement.
+  - QR code dessiné par React en SVG à partir de la grille (`components/ar/qrPath.ts`), sans injection de HTML ; montré seulement sur un appareil à pointeur fin (ordinateur) qui ne peut pas ouvrir l'AR. L'adresse est aussi écrite en clair.
+  - **Modèle de Spirit et Opportunity** : publié par la NASA uniquement dans son dépôt GitHub officiel `nasa/NASA-3D-Resources` (organisation vérifiée). Autorisé par l'équipe le 2026-11-20 « si c'est vérifié et qu'il n'y a pas de données confidentielles » : vérifié le jour même (compte NASA vérifié ; fichier de 37 Ko contenant seulement la géométrie compressée Draco, le nom du générateur Blender et des noms de matériaux génériques ; aucun nom, chemin, adresse ni métadonnée `extras`). `raw.githubusercontent.com` est ajouté à `NASA_MODEL_HOSTS` (CSP `connect-src` seulement). Le modèle n'est **pas en mètres** (8,7 × 7,3 × 12,7 unités pour un rover d'environ 1,5 m) : l'enfant le réduit en le pinçant, en attendant une échelle sourcée.
+  - **Intégrité des modèles** (décision de l'équipe du 2026-11-27 : « sécurise-les ») :
+    - le modèle MER est **figé sur le commit NASA** `45bd4face6557dc06f78f58875214f77f453205f` (dernier commit à modifier ce fichier), au lieu de la branche `master` qui peut changer ;
+    - chaque `3d-model` porte son **empreinte SHA-256** (`Media.sha256`, règle V19) ;
+    - le navigateur télécharge le fichier, recalcule l'empreinte avec Web Crypto et ne le donne à `<model-viewer>` (copie locale `blob:`) **que s'il correspond** ; sinon : message « ne correspond plus au fichier NASA vérifié », sans bouton Réessayer. Un modèle sans empreinte est refusé (échec fermé) ;
+    - `npm run models:check` (backend) refait la vérification ; le workflow `.github/workflows/models.yml` la lance sur chaque PR qui modifie `media.json`, chaque lundi et à la demande, à part de la CI principale pour qu'une panne d'un serveur NASA ne bloque pas une fusion ;
+    - revérification le 2026-11-27 : MER identique octet pour octet à `master` ; Ingenuity contient dans ses textures des métadonnées XMP d'édition d'image (historique Photoshop/GIMP 2019-2020, identifiants techniques), sans nom, adresse ni chemin ; module lunaire sans métadonnées.
+  - `Permissions-Policy` : `xr-spatial-tracking=(self)` ajouté (`security/headers.ts` et `vercel.json`) ; `camera=()` reste : WebXR et Quick Look n'utilisent pas l'API caméra de la page.
+- **Conséquences** : dépendance ajoutée dans `frontend/` : `qrcode-generator@^2.0.4`. L'AR ne s'ouvre qu'en HTTPS : à tester sur l'aperçu Vercel d'une PR, pas sur `localhost`. Dans Quick Look (iOS), les repères des pièces ne s'affichent pas : la chasse se joue alors sur la vue 3D de la page. Tests : `pages/ArPage.test.tsx`, `components/ar/qrPath.test.ts`.
 

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { ArrowLeft, ArrowRight, MapPin } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Gamepad2, MapPin } from 'lucide-react'
+import { ArFallback } from '@/components/ar/ArFallback'
 import { VoiceTag } from '@/components/sources/VoiceTag'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import { ApiError, api } from '@/api/client'
 import type { DestinationDetail, MachineDetail, MachinePart, Media, MissionDetail, StoryDetail } from '@/api/types'
 import { paths } from '@/app/paths'
@@ -10,6 +11,7 @@ import { SpaceBackdrop } from '@/components/celestial/SpaceBackdrop'
 import { LoadState } from '@/components/common/LoadState'
 import { MACHINE_TRANSITION_NAME } from '@/components/hangar/MachinePortal'
 import { ModelViewer3D } from '@/components/journey/ModelViewer3D'
+import { placedParts } from '@/lib/parts'
 import { PhotoFlight } from '@/components/journey/PhotoFlight'
 import { ActCard } from '@/components/machine/ActCard'
 import { LifeLine } from '@/components/machine/LifeLine'
@@ -148,6 +150,14 @@ function MachineLife({ machine, mission, destination, story }: MachineLifeProps)
 
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
   const goTo = (id: string) => sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // US-5.16: the parts hunt sends the visitor to "#quiz"; the router does not scroll to anchors.
+  const { hash } = useLocation()
+  useEffect(() => {
+    const id = hash.slice(1)
+    if (!id) return
+    const timer = window.setTimeout(() => sectionRefs.current[id]?.scrollIntoView({ block: 'start' }), 300)
+    return () => window.clearTimeout(timer)
+  }, [hash])
 
   const rail = [
     { id: 'arrival', label: t('machine.arrival') },
@@ -340,7 +350,16 @@ function MachineLife({ machine, mission, destination, story }: MachineLifeProps)
 
         {model && (
           <Chapter id="model" register={register} eyebrowText={t('machine.modelEyebrow')} title={t('machine.modelTitle')}>
-            <LazyModel model={model} parts={parts?.items ?? []} />
+            <LazyModel model={model} parts={parts?.items ?? []} arFallback={<ArFallback url={`${window.location.origin}${paths.ar(destinationId, machine.id)}`} name={machine.name} />} />
+            {parts && placedParts(parts.items).length > 0 && (
+              <Link
+                to={paths.ar(destinationId, machine.id)}
+                className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-world/60 px-5 font-semibold hover:bg-world hover:text-void"
+              >
+                <Gamepad2 aria-hidden="true" className="size-5" />
+                {t('ar.playLink')}
+              </Link>
+            )}
           </Chapter>
         )}
 
@@ -476,7 +495,7 @@ function Chapter({ id, eyebrowText, title, narrate, register, children }: Chapte
 }
 
 /** The NASA 3D model, loaded only when its chapter comes near (the viewer weighs ~140 KB). */
-function LazyModel({ model, parts }: { model: Media; parts: readonly MachinePart[] }) {
+function LazyModel({ model, parts, arFallback }: { model: Media; parts: readonly MachinePart[]; arFallback?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(typeof IntersectionObserver === 'undefined')
   useEffect(() => {
@@ -495,7 +514,7 @@ function LazyModel({ model, parts }: { model: Media; parts: readonly MachinePart
   }, [near])
   return (
     <div ref={ref} className="h-[28rem] lg:h-[36rem]">
-      {near && <ModelViewer3D model={model} parts={parts} />}
+      {near && <ModelViewer3D model={model} parts={parts} arFallback={arFallback} />}
     </div>
   )
 }

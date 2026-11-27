@@ -258,6 +258,11 @@ export interface Media {
   id: string
   type: MediaType
   url: string
+  /**
+   * SHA-256 (64 lowercase hex) of the file at `url`, required for 3D models (V19, ADR-028): the
+   * site refuses to show a model whose bytes changed since the team verified it.
+   */
+  sha256?: string
   pageUrl: string
   title: string | null
   /** Caption copied verbatim from the source page (English), or null if none is shown. */

@@ -1,0 +1,41 @@
+name: NASA 3D models
+
+# ADR-028 (V19): every 3D model shown to children must still be the exact file the team
+# verified. Runs apart from the main CI, so that a NASA server outage never blocks a merge:
+# on every pull request that changes the media list, every Monday, and on demand.
+on:
+  pull_request:
+    paths:
+      - backend/content/media.json
+      - backend/src/scripts/check-models.ts
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fingerprints:
+    name: models — SHA-256 of every NASA 3D model
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Check fingerprints
+        run: npm run models:check

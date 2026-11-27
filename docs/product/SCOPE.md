@@ -50,6 +50,7 @@
 - Audio / mode radio.
 - PWA et consultation hors ligne.
 - Mini-quiz.
+- Réalité augmentée et chasse aux pièces (US-5.16, ADR-028) : **réalisées sur demande écrite de l'équipe le 2026-11-19**, limitées aux machines dont la NASA publie un modèle 3D. Priorité à acter par le PO.
 - Version française complète de l'interface (si OPEN-06 confirme l'anglais pour le MVP).
 - Nouvelles destinations et nouveaux corps célestes ; espace séparé « deep space » (dont **Pioneer 10**).
 

@@ -9,7 +9,7 @@ configure({ asyncUtilTimeout: 5000 })
 // Warm the code-split pages once per worker, so the first test that navigates to one does not
 // pay their transform time inside its own wait.
 beforeAll(async () => {
-  await Promise.all([import('@/pages/DestinationPage'), import('@/pages/MachinePage'), import('@/pages/StoryPage'), import('@/pages/AboutPage'), import('@/pages/NotFoundPage')])
+  await Promise.all([import('@/pages/DestinationPage'), import('@/pages/MachinePage'), import('@/pages/StoryPage'), import('@/pages/AboutPage'), import('@/pages/ArPage'), import('@/pages/NotFoundPage')])
 })
 import { installMockApi } from './mockApi'
 
@@ -33,3 +33,8 @@ window.scrollTo = (() => {}) as typeof window.scrollTo
 // blocks autoplay would), so pages render straight away. Intro tests override this.
 window.HTMLMediaElement.prototype.play = () => Promise.reject(new Error('jsdom cannot play media'))
 window.HTMLMediaElement.prototype.pause = () => {}
+
+// jsdom has no object URLs: a verified 3D model (ADR-028) gets a recognisable fake one.
+let objectUrls = 0
+URL.createObjectURL = (() => `blob:verified-model-${(objectUrls += 1)}`) as typeof URL.createObjectURL
+URL.revokeObjectURL = (() => {}) as typeof URL.revokeObjectURL

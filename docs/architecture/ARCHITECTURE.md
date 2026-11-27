@@ -117,7 +117,8 @@ Règles : un composant par fichier ; un dossier de composants = un domaine ; `pa
 |---|---|---|---|
 | `/` | ExplorePage | — | DEST-001 → 005 |
 | `/explore/:destinationId` | DestinationPage | `#hangar` (choix de la machine, US-5.12) | EXPL, EQUIP |
-| `/explore/:destinationId/:machineId` | MachinePage | — (une machine, toute sa vie, US-5.12) | EQUIP, MEDIA, TIMELINE |
+| `/explore/:destinationId/:machineId` | MachinePage | `#quiz` (arrivée depuis la chasse aux pièces, US-5.16) | EQUIP, MEDIA, TIMELINE |
+| `/ar/:destinationId/:machineId` | ArPage | — (adresse du QR code : modèle NASA en réalité augmentée et chasse aux pièces, US-5.16, ADR-028) | MEDIA-001, EQUIP |
 | `/stories/:storyId` | StoryPage | `?step=1..6` (défaut 1), `?from=:machineId` (retour) | STORY-* |
 | `/about` | AboutPage | `#source-:sourceId` | ABOUT-*, SOURCE-004 |
 | `*` (et ids inconnus) | NotFoundPage | — | NAV-004 |
