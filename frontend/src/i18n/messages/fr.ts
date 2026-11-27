@@ -46,6 +46,7 @@ export const fr: Messages = {
     cue1: 'Un jour, nous sommes partis.',
     cue2: 'Nous avons marché sur la Lune.',
     cue3: 'Nous nous sommes posés sur Mars.',
+    cueFly: 'Nous y avons même volé.',
     cue4: 'Nos machines y sont encore.',
     finale: 'The Next Frontier',
     presents: 'OrbeMoria présente',
@@ -375,7 +376,8 @@ export const fr: Messages = {
     visualMoon: 'Lune en 3D : Scientific Visualization Studio de la NASA, « CGI Moon Kit » — mosaïque couleur de la caméra de Lunar Reconnaissance Orbiter et relief de son altimètre laser (LOLA). Domaine public.',
     visualMars: 'Mars en 3D : NASA / JPL / USGS, mosaïque globale colorisée Viking MDIM 2.1 (couleurs légèrement renforcées par OrbeMoria). Domaine public.',
     visualPlanets: 'Autres photos de planètes : galerie photo du NSSDCA de la NASA. Domaine public.',
-    visualIntro: 'Vidéo d’introduction : NASA Image and Video Library — « Ultimate Saturn V Launch », « Apollo 11 Restored Moonwalk », « Perseverance Rover’s Descent and Touchdown on Mars » ; montage OrbeMoria. Domaine public.',
+    visualIntro: 'Vidéo d’introduction : NASA Image and Video Library — « Ultimate Saturn V Launch w Enhanced Sound », « HQ-197, Apollo 12: Pinpoint for Science » (1969), « Perseverance Rover’s Descent and Touchdown on Mars: Onboard Camera Views », « Ingenuity Mars Helicopter’s Record-Breaking Flight » (NASA/JPL-Caltech) ; montage OrbeMoria. Domaine public.',
+    soundIntro: 'Sons de Mars de l’introduction : NASA Image and Video Library — « NASA’s Perseverance Rover Microphone Captures Sounds from Mars - B » (le vent, filtré par la NASA) et « NASA’s Perseverance Rover Hears Ingenuity Mars Helicopter in Flight » (le bourdonnement des rotors), NASA/JPL-Caltech ; courts extraits adoucis et baissés par OrbeMoria. Domaine public. La musique est synthétisée par le site.',
     mediaIntro: 'Les {count} images, vidéos et modèles 3D des récits, regroupés par auteur. Chaque titre ouvre la page d’origine.',
   },
   sound: {

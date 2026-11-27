@@ -1,7 +1,8 @@
 /**
- * Shared pieces of the site's synthesised sound (Web Audio API, no audio file): every sound
- * is made of pure tones sent into a long, dark echo — the feeling of a vast empty space. No
- * noise-based effect (team decision 2026-11-15: no "shh" of static, only space).
+ * Shared pieces of the site's sound (Web Audio API): soft tones sent into a long, dark echo —
+ * the feeling of a vast empty space — and, since 2026-11-27 (team decision), two real NASA
+ * recordings from Mars played very quietly in the intro (public/media). No synthetic static.
+ * Everything goes through `createSafeOutput` (limiter) before reaching the speakers.
  */
 
 type AudioContextClass = typeof AudioContext
@@ -24,14 +25,49 @@ export function createSpaceEcho(context: BaseAudioContext, destination: AudioNod
   }
   const convolver = context.createConvolver()
   convolver.buffer = impulse
-  // Dark echo: the high end of the tail is softened.
+  // Dark echo: the high end of the tail is softened (gentle on young ears and on headphones).
   const tone = context.createBiquadFilter()
   tone.type = 'lowpass'
-  tone.frequency.value = 3200
+  tone.frequency.value = 2400
   const wet = context.createGain()
   wet.gain.value = level
   convolver.connect(tone).connect(wet).connect(destination)
   return convolver
+}
+
+/**
+ * The last stage before the speakers (team request 2026-11-27, "adapted to the users' ears"):
+ * a soft limiter so that no chord, sample or overlap can ever peak loud, and a gentle cut of
+ * the very lowest rumble (inaudible on phones, tiring in headphones). Returns its input.
+ */
+export function createSafeOutput(context: BaseAudioContext, destination: AudioNode): AudioNode {
+  const rumble = context.createBiquadFilter()
+  rumble.type = 'highpass'
+  rumble.frequency.value = 40
+  // Every current browser has a compressor; if one ever lacks it, sound still plays (unlimited).
+  if (typeof context.createDynamicsCompressor !== 'function') {
+    rumble.connect(destination)
+    return rumble
+  }
+  const limiter = context.createDynamicsCompressor()
+  limiter.threshold.value = -20
+  limiter.knee.value = 8
+  limiter.ratio.value = 12
+  limiter.attack.value = 0.005
+  limiter.release.value = 0.3
+  rumble.connect(limiter).connect(destination)
+  return rumble
+}
+
+/** Decodes a short sound file served by the site (NASA recordings in public/media), or null. */
+export async function loadSample(context: BaseAudioContext, url: string): Promise<AudioBuffer | null> {
+  try {
+    const response = await fetch(url)
+    if (!response.ok) return null
+    return await context.decodeAudioData(await response.arrayBuffer())
+  } catch {
+    return null
+  }
 }
 
 /** A pure tone with a soft swell and fade, sent dry to `dry` and into `echo`. */

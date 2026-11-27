@@ -13,6 +13,7 @@ const SITE_VISUALS = [
   { key: 'about.visualMars', url: 'https://astrogeology.usgs.gov/search/map/mars_viking_colorized_global_mosaic_232m' },
   { key: 'about.visualPlanets', url: 'https://nssdc.gsfc.nasa.gov/photo_gallery/' },
   { key: 'about.visualIntro', url: 'https://images.nasa.gov/' },
+  { key: 'about.soundIntro', url: 'https://images.nasa.gov/details/JPL-20210222-M2020f-0003b-M2020_Audio_B_002' },
 ] as const
 
 /**
